@@ -10,11 +10,11 @@ library(ggsci)
 library(viridis)
 
 # Set working directory
-setwd("/powerplant/workspace/cfndxa/Cod_clock/Joint_analysis_ML")
+#setwd("/powerplant/workspace/cfndxa/Cod_clock/Joint_analysis_ML/github")
 
 # 2. Prepare data
 # INPUT: Load data object created by methylKit
-load("/workspace/cfndxa/Cod_clock/Joint_analysis_ML/samples_new_annotation/meth-10cov-100000CpGs.Rdata")
+load("data/meth-10cov-100000CpGs.Rdata")
 
 # Example of how the file looks like
 #head(meth)
@@ -42,7 +42,7 @@ cpgs <- tidyr::unite(cpg.df, cpgs, chr:start, sep=".")
 # Add the unique CpG names as column names in the dataframe
 colnames(perc.meth.df) <- t(cpgs)
 # Add the variables of interest. In this case we add "age" and "batch". Read the file containing this information in the following format with the samples ordered as in our dataframe (perc.meth.df):
-samples.age <- read.table("samples/samples-age.txt", sep="\t", stringsAsFactors = FALSE, quote="", header=TRUE) 
+samples.age <- read.table("data/samples-age.txt", sep="\t", stringsAsFactors = FALSE, quote="", header=TRUE) 
 #head(samples.age)
 #filename sample_file age sample batch
 #1 102F.txt        102F   5   y5s1     1
@@ -79,8 +79,8 @@ set.seed(123)
 meth.age.df.na <- na.aggregate(meth.age.df)
 
 # OUTPUT: this object can be saved as .Rdata and can be used in a new R session without need to run all previous steps. Also it can be saved as text file for use elsewhere if needed.
-save(meth.age.df.na, file="Methylation-data-preparation-output.RData")
-write.table(meth.age.df, file="NA-Samples-CpGs-Age.txt", sep="\t", dec=".", quote=FALSE, row.names=F, col.names=T)
+save(meth.age.df.na, file="data/Methylation-data-preparation-output.RData")
+#write.table(meth.age.df, file="data/NA-Samples-CpGs-Age.txt", sep="\t", dec=".", quote=FALSE, row.names=F, col.names=T)
 
 # 4. Evaluate distribution of global methylation values. May use boxplots (here) or PCA (next script). This is a necessary quality check before proceeding with building of epigenetic clocks which may reveal unexpected patterns, like in this case batch effects (see next script).
 # Convert to long format dataframe for downstream plotting 
@@ -90,10 +90,24 @@ set.seed(123)
 meth.spr.ran <- sample_n(meth.spread, 2000) # Sample 2000 rows of data with dplyr to facilitate plotting
 
 # Plot global DNA methylation values as boxplots per group to visualize check them
-p <- ggplot(meth.spread, aes(x = age,y = methylation, group = age, fill=age)) + geom_boxplot(alpha=0.7) + labs(x="Age (years)", y = "Methylation (%)", fill = "Age (years)") # Final plot including all DNA methylation
+p <- ggplot(meth.spread, aes(x = age,y = methylation, group = age, fill=age)) + geom_boxplot(alpha=0.7) + labs(x="Age (years)", y = "Methylation (%)", fill = "Age (years)") + # Final plot including all DNA methylation
 #p <- ggplot(meth.spr.ran, aes(x = age,y = methylation, group = age, fill=age)) + geom_boxplot(alpha=0.7) + labs(x="Age (years)", y = "Methylation (%)", fill = "Age (years)") # Quick plot for quick visualization
-p + theme_classic() + scale_fill_viridis(discrete = FALSE) 
-#ggsave("GlobalMethylation-withAge.tiff", width=10, height=8, units="cm", dpi=300)
+ scale_fill_manual(values=cols.age) + # see Appendix of this script
+  # scale_color_manual(values=cols.age) +
+  guides(fill = FALSE) +
+  Style_format_theme # see corresponding script "Style_format_theme"
+ggsave("plots/box-plots-globalDNAmethylation-otolithage-v1.tiff", plot=p, width=20, height=18, units="cm", dpi=300)
 
 # Use statistical tests to check for differences in medians
 pairwise.wilcox.test(meth.spread$methylation, meth.spread$age, p.adjust.method = "BH")
+
+# Appendix
+# Define colors of age classes to make sure they are always the same across plots
+cols.age <- c("#281b57",
+              "#4ebf53",
+              "#5d2192",
+              "#005410",
+              "#adb3ff",
+              "#b16800",
+              "#800046",
+              "#c63b24")

@@ -69,4 +69,4 @@ meth
 # 85735   334
 
 # 7. Save the object
-save(meth, file="meth-10cov-100000CpGs.Rdata")
+save(meth, file="data/meth-10cov-100000CpGs.Rdata")
