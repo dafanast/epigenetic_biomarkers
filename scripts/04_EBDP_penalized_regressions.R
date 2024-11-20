@@ -31,7 +31,7 @@ meth.complete <- as.data.frame(meth.corrected.batch.t) %>% mutate(age=samples.ag
 
 # Check that the dataframe has the correct dimensions
 #dim(meth.complete)
-#[1]   110 47464
+#[1]   110 47464 # In the last script the last info I can get is that >85700 CpGs are retained in the batchEffect-object. Why or how come you arrive at this stage with 47464 positions? I guess is after correction for batch effect? Not clear.
 
 # 3. Data splitting
 set.seed(123)
@@ -81,7 +81,7 @@ highly_correlated_names <- c(
 )
 # Remove duplicates (since the correlation matrix is symmetric)
 highly_correlated_names <- unique(highly_correlated_names)
-# Exclude highly correlated variables
+# Exclude highly correlated variables # If two variables are highly correlated, neither of them is retained in the filtered dataset? Should you not keep at least one of the correlated variables to be conservative? Perhaps correlated variables can be very informative. Precisely because there is more than one variable providing this information those could be relevant? On the contrary, I understand the problem is actually having too many variables and this is just a good reason to exclude some of them, but then for accuracy in M&M it should be clearly stated that you remove both
 filteredDescr.cor <- filteredDescr[, !colnames(filteredDescr) %in% highly_correlated_names]
 dim(filteredDescr.cor)
 #[1]     86 35328
@@ -107,7 +107,7 @@ exclude_columns_above_threshold <- function(data, threshold, percentage) {
     return(filtered_data)
 }
 # Set threshold and percentage
-threshold <- 80
+threshold <- 80  # no concuerda este valor con el comentario de la linea 98
 percentage <- 0.7
 # Filter columns
 filtered.high.meth <- exclude_columns_above_threshold(filteredDescr.cor, threshold, percentage)
@@ -126,7 +126,7 @@ exclude_columns_below_threshold <- function(data, threshold, percentage) {
   return(filtered_data)
 }
 # Set threshold and percentage
-threshold <- 20
+threshold <- 20  # no concuerda este valor con el comentario de la linea 98
 percentage <- 0.7
 # Filter columns
 filtered.low.meth <- exclude_columns_below_threshold(filtered.high.meth, threshold, percentage)
@@ -140,7 +140,7 @@ filtered.low.meth$age <- filtered.high.meth$age
 #save(filtered.low.meth, file="data/ExtremeValues-Training.RData")
 
 ## 4.4. Epigenome Wide Association Studies (EWAS). OPTIONAL: this step filters for CpGs correlated with age. It may be used to reduce the number of variables to train the models with, however, we haven't found any improvement in the model performance after this step. It requires the package WGCNA. 
-library(WGCNA)
+library(WGCNA) # Step 4.4 could improve with M-values because the transformation will work better with Pearson correlations (However I havent tested yet, I am in process of testig those things for my current projects, we can share results on that to figure out)
 # Keep age in a vector
 x.age <- as.vector(filtered.low.meth$age)
 # Convert to matrix
@@ -256,7 +256,7 @@ cor.test(predicted.age, age.train.transformed)
 testTransformed <- predict(preProcValues, age_test)
 
 # ii. Transformation of age: the same transformation used for the training dataset needs to be applied in the test.
-age.test.transformed <- log(testTransformed$age+0.1) 
+age.test.transformed <- log(testTransformed$age+0.1)  # age_test variable not availble as the meth-corrected-batch-effect.Rdata was not available. 
 
 # a. LASSO
 # Use model to predict age
@@ -294,7 +294,7 @@ lasso_model_all <- train(x=trainTransformed[,colnames(trainTransformed) !="age"]
 
 ## 7.4 Use the final model to predict age in the original dataframe
 # Transform methylation data
-final.all.trans <- predict(preProcValues, meth.complete)
+final.all.trans <- predict(preProcValues, meth.complete) # object not available? I can only run some parts of the code, not entirel as it is now. Perhaps this is not the idea, but just to let you know.
 #save(final.all.trans, file="MethDataForModel.Rdata")
 # Use model to predict age
 predicted.age.final <- predict(lasso_model_all,  final.all.trans)
