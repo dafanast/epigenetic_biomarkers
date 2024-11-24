@@ -65,7 +65,7 @@ meth.age.df[1:10,c(1:10, (ncol(meth.age.df)-2):ncol(meth.age.df))]
 #a) Method 1 using package “mice” (Multiple Imputation by Chained Equation)
 #library(mice)
 #set.seed(123)
-#init = mice(meth.age.df, maxit=0) # The default in mice package is 5, may be its good to add a comment on why this is changed to 0?
+#init = mice(meth.age.df)
 #meth = init$method
 #predM = init$predictorMatrix
 #colnames(meth.age.df)
