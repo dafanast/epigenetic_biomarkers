@@ -1,6 +1,6 @@
 # Preparation of a single methylation matrix from several individual sample files. The process follows the standard procedure suggested by methylKit. After uniting the samples we find that very few CpGs are left and we re-iterate the process using only samples with initial >100.000 CpGs.
 # NOTE: for my setup methylKit seems to run properly only in R version below 3.5.3.
-# Input data: individual sample files in methylKit format.
+# Input data: individual sample files in methylKit input format(before normalization and filtering).
 # Output data: a methylBase object from the methylKit package containing methylation data from all samples.
 
 # 1. Prepare the environment
@@ -66,7 +66,7 @@ meth = methylKit::unite(norm, destrand=FALSE, min.per.group=48L)
 # Check object
 meth
 # dim(meth)
-# 85735   334
+# 85735   334 # Have you tested using destrand option? That would allow you to keep more samples probably but I do not know how much rellevant hemimethylation can be for the development of the clock. Perhaps is good to test the results with and without destrand option to see that.
 
 # 7. Save the object
 save(meth, file="data/meth-10cov-100000CpGs.Rdata")
