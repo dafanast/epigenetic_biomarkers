@@ -7,6 +7,7 @@ library(ggfortify)
 library(tidyverse)
 #BiocManager::install("BEclear")
 library(BEclear)
+#library(devtools)
 #devtools::install_github("arleyc/PCAtest")
 library(PCAtest)
 
@@ -60,7 +61,7 @@ batchEffect <- calcBatchEffects(
   data = meth.batch.rev, samples = batch.annot,
   adjusted = TRUE, method = "fdr")
 # Optional: save the object to avoid re-calculating
-#save(batchEffect, file="data/batcheffects-object.Rdata")
+#save(batchEffect, file="data/batcheffects-object.Rdata") # In this data file there is only batchEffect list object; there is no object named 'meth.batch.rev' with 'batch.annot'
 #load("data/batcheffects-object.Rdata")
 
 # Summarize median comparison and p-value calculation results
@@ -76,7 +77,7 @@ cleared.data <- clearBEgenes(meth.batch.rev, batch.annot, summary)
 sum(complete.cases(cleared.data))
 
 # 5. Eliminate CpGs affected by batch. Other solutions can be implemented at this stage, for example following the BEclear package, corrections for batch effects can be introduced or other ways of imputing "NA" values can be applied. Here, we chose to eliminate the affected CpGs from the dataset.
-meth.corrected.batch <- na.omit(cleared.data)
+meth.corrected.batch <- na.omit(cleared.data)  # Perhaps add here a line on the number of CpGs affected and the number of CpGs retained to give an idea of the magnitude of the "problem"
 # Transpose dataframe
 meth.corrected.batch.t <- t(meth.corrected.batch)
 
@@ -108,7 +109,7 @@ meth.spr.ran <- sample_n(meth.spread, 20000) # Sample 5000 rows of data with dpl
 meth.spread$age <- factor(meth.spread$age)
 #meth.spr.ran$age <- factor(meth.spr.ran$age)
 # OUTPUT: Save the object with the corrected data
-save(meth.corrected.batch.t, file="data/meth-corrected-batch-effect.Rdata")
+save(meth.corrected.batch.t, file="data/meth-corrected-batch-effect.Rdata")  # File not available in github data folder and the previous neither. I cannot use data to follow all the code
 
 # Plot global DNA methylation values as boxplots or violin plots per group to visualize check them
 p <- ggplot(meth.spread, aes(x = age,y = methylation, group = age, fill=age)) + 
