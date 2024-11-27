@@ -16,7 +16,7 @@ library(ggsci)
 library(viridis)
 
 # Set working directory
-#setwd("/powerplant/workspace/cfndxa/Cod_clock/Joint_analysis_ML/github")
+#setwd("Joint_analysis_ML")
 
 # 2. Prepare data
 # INPUT: Load data object created by methylKit
