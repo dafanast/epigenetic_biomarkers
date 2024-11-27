@@ -15,7 +15,7 @@ library(caret)
 # Read final model
 load("data/FinalLASSOModel.Rdata") # lasso_model_all
 # Read full methylation data with samples information
-load("data/MethData_CompleteSampleInformation.Rdata") # meth.complete.full
+load("data/MethData_CompleteSampleInformation.Rdata") # meth.complete.full  # data file not available
 
 # 2. Prepare data
 # Prepare a dataframe containing the coefficients attributed to each CpG based on the final model
@@ -33,11 +33,11 @@ x.age <- as.vector(meth.complete.full$age)
 # Prepare a reduced dataframe including age
 cpgs.meth.clock.age <- select(meth.complete.full, all_of(cpgs.clock), age)
 # OUTPUT: Save the object with the reduced data
-save(cpgs.meth.clock.age, file="data/CpGs-clock-age.Rdata")
+save(cpgs.meth.clock.age, file="data/CpGs-clock-age.Rdata")  # Here the object is called cpgs.meth.clock.age
 #load("CpGs-clock-age.Rdata")
 
 # Convert methylation data to matrix
-y.cpgs <- data.matrix(cpgs.meth.clock)
+y.cpgs <- data.matrix(cpgs.meth.clock) #And here it asks for the object cpgs.meth.clock, if it is the same as above please rename similarly?
 # Calculate correlations
 cor.age.pval <- corAndPvalue(x=x.age, y=y.cpgs, use="pairwise.complete.obs", alternative="two.sided")
 # Prepare dataframe with important information
