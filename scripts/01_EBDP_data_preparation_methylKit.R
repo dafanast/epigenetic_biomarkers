@@ -1,5 +1,12 @@
 # Preparation of a single methylation matrix from several individual sample files. The process follows the standard procedure suggested by methylKit. After uniting the samples we find that very few CpGs are left and we re-iterate the process using only samples with initial >100.000 CpGs.
-# NOTE: for my setup methylKit seems to run properly only in R version below 3.5.3.
+
+# Relevant information from sessionInfo()
+## R version 4.3.3 (2024-02-29)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Red Hat Enterprise Linux 9.4 (Plow)
+## methylKit_1.28.0     GenomicRanges_1.54.1 GenomeInfoDb_1.38.8 
+## IRanges_2.36.0       S4Vectors_0.40.2     BiocGenerics_0.48.1 
+
 # Input data: individual sample files in methylKit input format (before normalization and filtering).
 # Output data: a methylBase object from the methylKit package containing methylation data from all samples.
 
@@ -68,5 +75,5 @@ meth
 # dim(meth)
 # 85735   334 
 
-# 7. Save the object
-save(meth, file="data/meth-10cov-100000CpGs.Rdata")
+# OPTIONAL: 7. Save the object
+# save(meth, file="data/meth-10cov-100000CpGs.Rdata")
