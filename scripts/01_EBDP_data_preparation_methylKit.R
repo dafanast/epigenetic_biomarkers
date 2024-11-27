@@ -15,7 +15,7 @@
 library(methylKit)
 
 # Set working directory: CHANGE TO YOUR WORKING DIRECTORY
-setwd("Joint_analysis_ML/samples_new_annotation")
+setwd("Joint_analysis_ML")
 
 # 2. Prepare data
 # INPUT: Read individual sample  files
