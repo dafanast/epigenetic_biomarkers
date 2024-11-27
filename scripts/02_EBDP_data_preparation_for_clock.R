@@ -1,3 +1,9 @@
+# Relevant information from sessionInfo()
+## R version 4.3.3 (2024-02-29)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Red Hat Enterprise Linux 9.4 (Plow)
+## Packages: viridis_0.6.5	viridisLite_0.4.2	ggsci_3.1.0	lubridate_1.9.3	forcats_1.0.0	stringr_1.5.1	dplyr_1.1.4	purrr_1.0.2	readr_2.1.5	tidyr_1.3.1	tibble_3.2.1	ggplot2_3.5.1	tidyverse_2.0.0	methylKit_1.28.0	GenomicRanges_1.54.1	GenomeInfoDb_1.38.8	IRanges_2.36.0	S4Vectors_0.40.2	BiocGenerics_0.48.1
+
 # Input data:methylBase object from the methylKit package. Other objects containing percent methylation per CpG for all samples can also be used.
 # Output data: a dataframe with correctly named unique CpGs as columns and samples as rows, without missing values and with age of samples amended. 
 
@@ -78,9 +84,8 @@ library(zoo)
 set.seed(123)
 meth.age.df.na <- na.aggregate(meth.age.df)
 
-# OUTPUT: this object can be saved as .Rdata and can be used in a new R session without need to run all previous steps. Also it can be saved as text file for use elsewhere if needed.
-save(meth.age.df.na, file="data/Methylation-data-preparation-output.RData")
-#write.table(meth.age.df, file="data/NA-Samples-CpGs-Age.txt", sep="\t", dec=".", quote=FALSE, row.names=F, col.names=T)
+# OPTIONAL. OUTPUT: this object can be saved as .Rdata and can be used in a new R session without need to run all previous steps. Also it can be saved as text file for use elsewhere if needed.
+# save(meth.age.df.na, file="data/Methylation-data-preparation-output.RData")
 
 # 4. Evaluate distribution of global methylation values. May use boxplots (here) or PCA (next script). This is a necessary quality check before proceeding with building of epigenetic clocks which may reveal unexpected patterns, like in this case batch effects (see next script).
 # Convert to long format dataframe for downstream plotting 
