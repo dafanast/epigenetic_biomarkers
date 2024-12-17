@@ -1,3 +1,9 @@
+# Relevant information from sessionInfo()
+## R version 4.3.3 (2024-02-29)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Red Hat Enterprise Linux 9.4 (Plow)
+## Packages: PCAtest_0.0.2	BEclear_2.18.0	BiocParallel_1.36.0	lubridate_1.9.3	forcats_1.0.0	stringr_1.5.1	dplyr_1.1.4	purrr_1.0.2	readr_2.1.5	tidyr_1.3.1	tibble_3.2.1	tidyverse_2.0.0	ggfortify_0.4.17	ggplot2_3.5.1
+
 # Input data: a dataframe with correctly named unique CpGs as columns and samples as rows, without missing values and with age of samples ammended, output of EBDP_methylation_data_preparation.R script.
 # Output data: a matrix with DNA methylation values corrected for batch effects. 
 
@@ -12,10 +18,10 @@ library(BEclear)
 library(PCAtest)
 
 # Set working directory
-#setwd("/powerplant/workspace/cfndxa/Cod_clock/Joint_analysis_ML/github")
+#setwd("Joint_analysis_ML")
 
 # 2. Prepare data
-# INPUT: Load data from previous session
+# INPUT: Load data from previous session in script 02_EBDP_data_preparation_for_clock
 load("data/Methylation-data-preparation-output.RData") # Object named meth.age.df.na
 
 # Example of how the file looks like
@@ -61,7 +67,7 @@ batchEffect <- calcBatchEffects(
   data = meth.batch.rev, samples = batch.annot,
   adjusted = TRUE, method = "fdr")
 # Optional: save the object to avoid re-calculating
-#save(batchEffect, file="data/batcheffects-object.Rdata") # In this data file there is only batchEffect list object; there is no object named 'meth.batch.rev' with 'batch.annot'
+#save(batchEffect, file="data/batcheffects-object.Rdata") 
 #load("data/batcheffects-object.Rdata")
 
 # Summarize median comparison and p-value calculation results
@@ -72,12 +78,13 @@ summary.pval <- summary %>% filter(pvalue<0.05)
 score <- calcScore(meth.batch.rev, batch.annot, summary, dir = getwd())
 knitr::kable(score, caption = 'Batch scores')
 # Set genes with batch effects to NA
-cleared.data <- clearBEgenes(meth.batch.rev, batch.annot, summary)
+cleared.data <- clearBEgenes(meth.batch.rev, batch.annot, summary) # Output: "2309408 values ( 24.4872320956159 % of the data) set to NA"
 # Counts genes without batch effects
-sum(complete.cases(cleared.data))
+sum(complete.cases(cleared.data)) 
 
-# 5. Eliminate CpGs affected by batch. Other solutions can be implemented at this stage, for example following the BEclear package, corrections for batch effects can be introduced or other ways of imputing "NA" values can be applied. Here, we chose to eliminate the affected CpGs from the dataset.
-meth.corrected.batch <- na.omit(cleared.data)  # Perhaps add here a line on the number of CpGs affected and the number of CpGs retained to give an idea of the magnitude of the "problem"
+# 5. Eliminate CpGs affected by batch. Other solutions can be implemented at this stage, for example following the BEclear package, corrections for batch effects can be introduced or other ways of imputing "NA" values can be applied. Here, we chose to eliminate the affected CpGs from the dataset which is the most radical approach since we could afford losing several thousands of CpGs.
+meth.corrected.batch <- na.omit(cleared.data) 
+sum(complete.cases(meth.corrected.batch)) # Output: 44349
 # Transpose dataframe
 meth.corrected.batch.t <- t(meth.corrected.batch)
 
@@ -109,7 +116,7 @@ meth.spr.ran <- sample_n(meth.spread, 20000) # Sample 5000 rows of data with dpl
 meth.spread$age <- factor(meth.spread$age)
 #meth.spr.ran$age <- factor(meth.spr.ran$age)
 # OUTPUT: Save the object with the corrected data
-save(meth.corrected.batch.t, file="data/meth-corrected-batch-effect.Rdata")  # File not available in github data folder and the previous neither. I cannot use data to follow all the code
+# save(meth.corrected.batch.t, file="data/meth-corrected-batch-effect.Rdata") 
 
 # Plot global DNA methylation values as boxplots or violin plots per group to visualize check them
 p <- ggplot(meth.spread, aes(x = age,y = methylation, group = age, fill=age)) + 
