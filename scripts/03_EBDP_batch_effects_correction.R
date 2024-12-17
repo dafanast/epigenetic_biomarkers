@@ -84,9 +84,10 @@ sum(complete.cases(cleared.data))
 
 # 5. Eliminate CpGs affected by batch. Other solutions can be implemented at this stage, for example following the BEclear package, corrections for batch effects can be introduced or other ways of imputing "NA" values can be applied. Here, we chose to eliminate the affected CpGs from the dataset which is the most radical approach since we could afford losing several thousands of CpGs.
 meth.corrected.batch <- na.omit(cleared.data) 
-sum(complete.cases(meth.corrected.batch)) # Output: 44349
 # Transpose dataframe
 meth.corrected.batch.t <- t(meth.corrected.batch)
+# dim(meth.corrected.batch.t)
+#  110 47464
 
 # 6. Visually check the corrected dataset by PCA again
 # Calculate PCs
